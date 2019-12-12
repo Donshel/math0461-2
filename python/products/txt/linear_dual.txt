@@ -1,0 +1,11 @@
+operational_1 [10] 0.02
+operational_1 [22] 0.01
+contractual_1 [3] 3000.0
+contractual_1 [6] 3000.0
+contractual_1 [7] 3000.0
+contractual_1 [10] 3000.0
+contractual_1 [12] 3000.0
+contractual_1 [15] 3000.0
+contractual_1 [16] 3000.0
+contractual_1 [19] 3000.0
+contractual_1 [20] 3000.0

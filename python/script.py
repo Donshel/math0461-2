@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import os
 
 from networkx import read_gpickle
 from pyomo.environ import ConcreteModel, Param, Set, Var, Constraint, Objective, NonNegativeReals, Reals, minimize, Suffix
-from pyomo.opt import ProblemFormat, SolverFactory
+from pyomo.opt import SolverFactory
 
 # Function
 
@@ -80,10 +81,10 @@ def gas_flow_linearized(model, i):
 model.gas_flow = Constraint(model.P, rule=gas_flow_linearized)
 
 def operational_1(model, i):
-    return sum(model.pi[j] * (model.delta[j, i] if model.delta[j, i] != -1 else -model.rho_m[i]) for j in model.N) >= 0
+    return sum(model.pi[j] * (-model.rho_m[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) >= 0
 
 def operational_2(model, i):
-    return sum(model.pi[j] * (model.delta[j, i] if model.delta[j, i] != -1 else -model.rho_p[i]) for j in model.N) <= 0
+    return sum(model.pi[j] * (-model.rho_p[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) <= 0
 
 def operational_3(model, i):
     return model.phi[i] >= 0
@@ -118,18 +119,33 @@ model.contractual_2 = Constraint(model.N, rule=contractual_2)
 # Objective Definition
 
 def objective(model):
-    return sum(model.kappa[i] * pressure_diff(model, i) for i in model.C) + sum(model.v[i] * (model.d[i] + model.psi[i]) for i in model.N)
+    temp = sum(model.kappa[i] * pressure_diff(model, i) for i in model.C)
+    temp += sum(model.v[i] * (model.d[i] + model.psi[i]) for i in model.N)
+    return temp
 
 model.objective = Objective(rule=objective, sense=minimize)
 
-# Solve
+# Dual
 
 model.dual = Suffix(direction=Suffix.IMPORT)
+
+# Solve
 
 opt = SolverFactory("gurobi")
 results = opt.solve(model, tee=True, keepfiles=False)
 
-# Display
+## Write
 
-model.display()
-model.dual.display()
+DIR = 'products/txt/'
+os.makedirs(DIR, exist_ok=True)
+
+model.pprint(filename=DIR + 'linear_full.txt')
+
+model.display(filename=DIR + 'linear_sol.txt')
+
+with open(DIR + 'linear_dual.txt', 'w') as f:
+    for c in model.component_objects(Constraint, active=True):
+        for index in c:
+            temp = model.dual[c[index]]
+            if temp is not None and temp != 0:
+                print(c, '[{:d}]'.format(index), temp, file=f)
