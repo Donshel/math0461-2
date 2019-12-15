@@ -758,75 +758,75 @@
 
 3 Var Declarations
     phi : Size=24, Index=E
-        Key : Lower : Value          : Upper : Fixed : Stale : Domain
-          1 :  None :  5.59725610142 :  None : False : False :  Reals
-          2 :  None :  5.59725610142 :  None : False : False :  Reals
-          3 :  None :  9.79725610142 :  None : False : False :  Reals
-          4 :  None :  9.79725610142 :  None : False : False :  Reals
-          5 :  None :  15.6765122028 :  None : False : False :  Reals
-          6 :  None :  2.53148779716 :  None : False : False :  Reals
-          7 :  None : -1.50251220284 :  None : False : False :  Reals
-          8 :  None : -6.75851220284 :  None : False : False :  Reals
-          9 :  None :          8.918 :  None : False : False :  Reals
-         10 :  None :         22.012 :  None : False : False :  Reals
-         11 :  None :            0.0 :  None : False : False :  Reals
-         12 :  None :      19.618224 :  None : False : False :  Reals
-         13 :  None :       2.393776 :  None : False : False :  Reals
-         14 :  None :      13.945409 :  None : False : False :  Reals
-         15 :  None :       1.701591 :  None : False : False :  Reals
-         16 :  None :         13.506 :  None : False : False :  Reals
-         17 :  None :         11.386 :  None : False : False :  Reals
-         18 :  None :         12.586 :  None : False : False :  Reals
-         19 :  None :         22.464 :  None : False : False :  Reals
-         20 :  None :         15.616 :  None : False : False :  Reals
-         21 :  None :          2.141 :  None : False : False :  Reals
-         22 :  None :          2.141 :  None : False : False :  Reals
-         23 :  None :          2.141 :  None : False : False :  Reals
-         24 :  None :          1.919 :  None : False : False :  Reals
+        Key : Lower : Value         : Upper : Fixed : Stale : Domain
+          1 :  None : 4.52971586337 :  None : False : False :  Reals
+          2 :  None : 4.52971586337 :  None : False : False :  Reals
+          3 :  None : 8.72971586337 :  None : False : False :  Reals
+          4 :  None : 8.72971586337 :  None : False : False :  Reals
+          5 :  None : 13.5414317267 :  None : False : False :  Reals
+          6 :  None :           4.8 :  None : False : False :  Reals
+          7 :  None :         0.766 :  None : False : False :  Reals
+          8 :  None :         -4.49 :  None : False : False :  Reals
+          9 :  None : 9.05143172675 :  None : False : False :  Reals
+         10 :  None :        20.344 :  None : False : False :  Reals
+         11 :  None :           0.0 :  None : False : False :  Reals
+         12 :  None : 18.1316078814 :  None : False : False :  Reals
+         13 :  None : 2.21239211861 :  None : False : False :  Reals
+         14 :  None : 12.4587976165 :  None : False : False :  Reals
+         15 :  None :  1.5202023835 :  None : False : False :  Reals
+         16 :  None : 12.7065419904 :  None : False : False :  Reals
+         17 :  None : 10.5865419904 :  None : False : False :  Reals
+         18 :  None : 10.5865419904 :  None : False : False :  Reals
+         19 :  None : 20.5979737171 :  None : False : False :  Reals
+         20 :  None : 13.7499737171 :  None : False : False :  Reals
+         21 :  None : 1.27245800962 :  None : False : False :  Reals
+         22 :  None : 1.27245800962 :  None : False : False :  Reals
+         23 :  None : 1.27245800962 :  None : False : False :  Reals
+         24 :  None : 1.05045800962 :  None : False : False :  Reals
     pi : Size=20, Index=N
         Key : Lower : Value         : Upper : Fixed : Stale : Domain
-          1 :     0 : 2513.74244702 :  None : False : False : NonNegativeReals
-          2 :     0 : 2513.40173601 :  None : False : False : NonNegativeReals
-          3 :     0 : 2512.49722802 :  None : False : False : NonNegativeReals
-          4 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-          5 :     0 : 868.193641781 :  None : False : False : NonNegativeReals
-          6 :     0 :         900.0 :  None : False : False : NonNegativeReals
-          7 :     0 : 989.298263112 :  None : False : False : NonNegativeReals
-          8 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-          9 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         10 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         11 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         12 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         13 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         14 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         15 :     0 :        2500.0 :  None : False : False : NonNegativeReals
+          1 :     0 : 3627.80389851 :  None : False : False : NonNegativeReals
+          2 :     0 : 3622.35477358 :  None : False : False : NonNegativeReals
+          3 :     0 : 3594.47545506 :  None : False : False : NonNegativeReals
+          4 :     0 : 3295.71857224 :  None : False : False : NonNegativeReals
+          5 :     0 :  3321.5291012 :  None : False : False : NonNegativeReals
+          6 :     0 : 3052.00672647 :  None : False : False : NonNegativeReals
+          7 :     0 : 3039.44105955 :  None : False : False : NonNegativeReals
+          8 :     0 :       4382.44 :  None : False : False : NonNegativeReals
+          9 :     0 :       4382.44 :  None : False : False : NonNegativeReals
+         10 :     0 :  3990.2678494 :  None : False : False : NonNegativeReals
+         11 :     0 : 3750.82705613 :  None : False : False : NonNegativeReals
+         12 :     0 : 3353.49571981 :  None : False : False : NonNegativeReals
+         13 :     0 : 3087.70789408 :  None : False : False : NonNegativeReals
+         14 :     0 : 3050.98292778 :  None : False : False : NonNegativeReals
+         15 :     0 : 2795.91189544 :  None : False : False : NonNegativeReals
          16 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         17 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         18 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         19 :     0 :        2500.0 :  None : False : False : NonNegativeReals
-         20 :     0 :        2500.0 :  None : False : False : NonNegativeReals
+         17 :     0 : 3644.91359216 :  None : False : False : NonNegativeReals
+         18 :     0 :        3969.0 :  None : False : False : NonNegativeReals
+         19 :     0 : 769.924614146 :  None : False : False : NonNegativeReals
+         20 :     0 :         625.0 :  None : False : False : NonNegativeReals
     psi : Size=20, Index=N
-        Key : Lower : Value         : Upper : Fixed : Stale : Domain
-          1 :  None : 11.1945122028 :  None : False : False :  Reals
-          2 :  None :           8.4 :  None : False : False :  Reals
-          3 :  None :        -3.918 :  None : False : False :  Reals
-          4 :  None :           0.0 :  None : False : False :  Reals
-          5 :  None : 2.53148779716 :  None : False : False :  Reals
-          6 :  None :        -4.034 :  None : False : False :  Reals
-          7 :  None :        -5.256 :  None : False : False :  Reals
-          8 :  None :        22.012 :  None : False : False :  Reals
-          9 :  None :           0.0 :  None : False : False :  Reals
-         10 :  None :        -6.365 :  None : False : False :  Reals
-         11 :  None :           0.0 :  None : False : False :  Reals
-         12 :  None :         -2.12 :  None : False : False :  Reals
-         13 :  None :           1.2 :  None : False : False :  Reals
-         14 :  None :          0.96 :  None : False : False :  Reals
-         15 :  None :        -6.848 :  None : False : False :  Reals
-         16 :  None :       -15.616 :  None : False : False :  Reals
-         17 :  None :           0.0 :  None : False : False :  Reals
-         18 :  None :           0.0 :  None : False : False :  Reals
-         19 :  None :        -0.222 :  None : False : False :  Reals
-         20 :  None :        -1.919 :  None : False : False :  Reals
+        Key : Lower : Value          : Upper : Fixed : Stale : Domain
+          1 :  None :  9.05943172675 :  None : False : False :  Reals
+          2 :  None :            8.4 :  None : False : False :  Reals
+          3 :  None :         -3.918 :  None : False : False :  Reals
+          4 :  None :            0.0 :  None : False : False :  Reals
+          5 :  None :            4.8 :  None : False : False :  Reals
+          6 :  None :         -4.034 :  None : False : False :  Reals
+          7 :  None :         -5.256 :  None : False : False :  Reals
+          8 :  None :         20.344 :  None : False : False :  Reals
+          9 :  None :            0.0 :  None : False : False :  Reals
+         10 :  None :         -6.365 :  None : False : False :  Reals
+         11 :  None :            0.0 :  None : False : False :  Reals
+         12 :  None :          -2.12 :  None : False : False :  Reals
+         13 :  None :            0.0 :  None : False : False :  Reals
+         14 :  None :           0.96 :  None : False : False :  Reals
+         15 :  None :         -6.848 :  None : False : False :  Reals
+         16 :  None : -13.7499737171 :  None : False : False :  Reals
+         17 :  None :            0.0 :  None : False : False :  Reals
+         18 :  None :            0.0 :  None : False : False :  Reals
+         19 :  None :         -0.222 :  None : False : False :  Reals
+         20 :  None : -1.05045800962 :  None : False : False :  Reals
 
 1 Objective Declarations
     objective : Size=1, Index=None, Active=True
@@ -878,29 +878,29 @@
          18 :  -Inf : psi[18] :    0.0 :   True
          19 :  -Inf : psi[19] :    0.0 :   True
          20 :  -Inf : psi[20] :    0.0 :   True
-    gas_flow : Size=21, Index=P, Active=True
-        Key : Lower : Body                                                            : Upper : Active
-          1 :   0.0 :    9.07027*(- pi[1] + pi[2]) + (2*phi[1] - 10.911288)*10.911288 :   0.0 :   True
-          2 :   0.0 :    9.07027*(- pi[1] + pi[2]) + (2*phi[2] - 10.911288)*10.911288 :   0.0 :   True
-          3 :   0.0 :    6.04685*(- pi[2] + pi[3]) + (2*phi[3] - 19.311288)*19.311288 :   0.0 :   True
-          4 :   0.0 :    6.04685*(- pi[2] + pi[3]) + (2*phi[4] - 19.311288)*19.311288 :   0.0 :   True
-          5 :   0.0 :    1.39543*(- pi[3] + pi[4]) + (2*phi[5] - 30.786576)*30.786576 :   0.0 :   True
-          6 :   0.0 :     0.100256*(- pi[5] + pi[6]) + (2*phi[6] - 5.629424)*5.629424 :   0.0 :   True
-          7 :   0.0 :     0.148655*(- pi[6] + pi[7]) + (2*phi[7] - 2.438576)*2.438576 :   0.0 :   True
-          8 :   0.0 :     0.226895*(pi[4] - pi[7]) + (2*phi[8] - 12.950576)*12.950576 :   0.0 :   True
-          9 :   0.0 :        0.659656*(- pi[4] + pi[14]) + (2*phi[9] - 17.836)*17.836 :   0.0 :   True
-         12 :   0.0 :  1.81405*(- pi[9] + pi[10]) + (2*phi[12] - 39.236448)*39.236448 :   0.0 :   True
-         13 :   0.0 :  0.0270084*(- pi[9] + pi[10]) + (2*phi[13] - 4.787552)*4.787552 :   0.0 :   True
-         14 :   0.0 : 1.45124*(- pi[10] + pi[11]) + (2*phi[14] - 27.890818)*27.890818 :   0.0 :   True
-         15 :   0.0 : 0.0216067*(- pi[10] + pi[11]) + (2*phi[15] - 3.403182)*3.403182 :   0.0 :   True
-         16 :   0.0 :      0.863836*(- pi[11] + pi[12]) + (2*phi[16] - 27.012)*27.012 :   0.0 :   True
-         17 :   0.0 :      0.907027*(- pi[12] + pi[13]) + (2*phi[17] - 22.772)*22.772 :   0.0 :   True
-         18 :   0.0 :       7.25622*(- pi[13] + pi[14]) + (2*phi[18] - 25.172)*25.172 :   0.0 :   True
-         19 :   0.0 :       3.62811*(- pi[14] + pi[15]) + (2*phi[19] - 44.928)*44.928 :   0.0 :   True
-         20 :   0.0 :       1.45124*(- pi[15] + pi[16]) + (2*phi[20] - 31.232)*31.232 :   0.0 :   True
-         21 :   0.0 :       0.0514445*(- pi[11] + pi[17]) + (2*phi[21] - 4.282)*4.282 :   0.0 :   True
-         23 :   0.0 :       0.0017032*(- pi[18] + pi[19]) + (2*phi[23] - 4.282)*4.282 :   0.0 :   True
-         24 :   0.0 :        0.027819*(- pi[19] + pi[20]) + (2*phi[24] - 3.838)*3.838 :   0.0 :   True
+    gas_flow_linearized : Size=21, Index=P, Active=True
+        Key : Lower : Body                                             : Upper : Active
+          1 :   0.0 :     9.07027*(- pi[1] + pi[2]) + 10.911288*phi[1] :   0.0 :   True
+          2 :   0.0 :     9.07027*(- pi[1] + pi[2]) + 10.911288*phi[2] :   0.0 :   True
+          3 :   0.0 :     6.04685*(- pi[2] + pi[3]) + 19.311288*phi[3] :   0.0 :   True
+          4 :   0.0 :     6.04685*(- pi[2] + pi[3]) + 19.311288*phi[4] :   0.0 :   True
+          5 :   0.0 :     1.39543*(- pi[3] + pi[4]) + 30.786576*phi[5] :   0.0 :   True
+          6 :   0.0 :     0.100256*(- pi[5] + pi[6]) + 5.629424*phi[6] :   0.0 :   True
+          7 :   0.0 :     0.148655*(- pi[6] + pi[7]) + 2.438576*phi[7] :   0.0 :   True
+          8 :   0.0 :      0.226895*(pi[4] - pi[7]) + 12.950576*phi[8] :   0.0 :   True
+          9 :   0.0 :      0.659656*(- pi[4] + pi[14]) + 17.836*phi[9] :   0.0 :   True
+         12 :   0.0 :   1.81405*(- pi[9] + pi[10]) + 39.236448*phi[12] :   0.0 :   True
+         13 :   0.0 :  0.0270084*(- pi[9] + pi[10]) + 4.787552*phi[13] :   0.0 :   True
+         14 :   0.0 :  1.45124*(- pi[10] + pi[11]) + 27.890818*phi[14] :   0.0 :   True
+         15 :   0.0 : 0.0216067*(- pi[10] + pi[11]) + 3.403182*phi[15] :   0.0 :   True
+         16 :   0.0 :    0.863836*(- pi[11] + pi[12]) + 27.012*phi[16] :   0.0 :   True
+         17 :   0.0 :    0.907027*(- pi[12] + pi[13]) + 22.772*phi[17] :   0.0 :   True
+         18 :   0.0 :     7.25622*(- pi[13] + pi[14]) + 25.172*phi[18] :   0.0 :   True
+         19 :   0.0 :     3.62811*(- pi[14] + pi[15]) + 44.928*phi[19] :   0.0 :   True
+         20 :   0.0 :     1.45124*(- pi[15] + pi[16]) + 31.232*phi[20] :   0.0 :   True
+         21 :   0.0 :    0.0514445*(- pi[11] + pi[17]) + 4.282*phi[21] :   0.0 :   True
+         23 :   0.0 :    0.0017032*(- pi[18] + pi[19]) + 4.282*phi[23] :   0.0 :   True
+         24 :   0.0 :     0.027819*(- pi[19] + pi[20]) + 3.838*phi[24] :   0.0 :   True
     injection : Size=20, Index=N, Active=True
         Key : Lower : Body                                              : Upper : Active
           1 :   0.0 :                          psi[1] - phi[1] - phi[2] :   0.0 :   True
@@ -985,136 +985,136 @@
 
 1 Suffix Declarations
     dual : Direction=Suffix.IMPORT, Datatype=Suffix.FLOAT
-        Key               : Value
-        contractual_1[10] : 3000.0
-        contractual_1[11] :   -0.0
-        contractual_1[12] : 3000.0
-        contractual_1[13] :    0.0
-        contractual_1[14] :    0.0
-        contractual_1[15] : 3000.0
-        contractual_1[16] : 3000.0
-        contractual_1[17] :   -0.0
-        contractual_1[18] :   -0.0
-        contractual_1[19] : 3000.0
-         contractual_1[1] :    0.0
-        contractual_1[20] : 3000.0
-         contractual_1[2] :    0.0
-         contractual_1[3] : 3000.0
-         contractual_1[4] :   -0.0
-         contractual_1[5] :    0.0
-         contractual_1[6] : 3000.0
-         contractual_1[7] : 3000.0
-         contractual_1[8] :    0.0
-         contractual_1[9] :   -0.0
-        contractual_2[10] :    0.0
-        contractual_2[11] :    0.0
-        contractual_2[12] :    0.0
-        contractual_2[13] :    0.0
-        contractual_2[14] :    0.0
-        contractual_2[15] :    0.0
-        contractual_2[16] :    0.0
-        contractual_2[17] :    0.0
-        contractual_2[18] :    0.0
-        contractual_2[19] :    0.0
-         contractual_2[1] :    0.0
-        contractual_2[20] :    0.0
-         contractual_2[2] :    0.0
-         contractual_2[3] :    0.0
-         contractual_2[4] :    0.0
-         contractual_2[5] :    0.0
-         contractual_2[6] :    0.0
-         contractual_2[7] :    0.0
-         contractual_2[8] :    0.0
-         contractual_2[9] :    0.0
-             gas_flow[12] :    0.0
-             gas_flow[13] :    0.0
-             gas_flow[14] :    0.0
-             gas_flow[15] :    0.0
-             gas_flow[16] :    0.0
-             gas_flow[17] :    0.0
-             gas_flow[18] :    0.0
-             gas_flow[19] :    0.0
-              gas_flow[1] :    0.0
-             gas_flow[20] :    0.0
-             gas_flow[21] :    0.0
-             gas_flow[23] :    0.0
-             gas_flow[24] :    0.0
-              gas_flow[2] :    0.0
-              gas_flow[3] :    0.0
-              gas_flow[4] :    0.0
-              gas_flow[5] :    0.0
-              gas_flow[6] :    0.0
-              gas_flow[7] :    0.0
-              gas_flow[8] :    0.0
-              gas_flow[9] :    0.0
-            injection[10] :    0.0
-            injection[11] :    0.0
-            injection[12] :    0.0
-            injection[13] :    0.0
-            injection[14] :    0.0
-            injection[15] :    0.0
-            injection[16] :    0.0
-            injection[17] :    0.0
-            injection[18] :    0.0
-            injection[19] :    0.0
-             injection[1] :    0.0
-            injection[20] :    0.0
-             injection[2] :    0.0
-             injection[3] :    0.0
-             injection[4] :    0.0
-             injection[5] :    0.0
-             injection[6] :    0.0
-             injection[7] :    0.0
-             injection[8] :    0.0
-             injection[9] :    0.0
-        operational_1[10] :   0.02
-        operational_1[11] :    0.0
-        operational_1[22] :   0.01
-        operational_2[10] :    0.0
-        operational_2[11] :    0.0
-        operational_2[22] :    0.0
-        operational_3[10] :    0.0
-        operational_3[11] :   -0.0
-        operational_3[22] :    0.0
-           security_1[10] :    0.0
-           security_1[11] :    0.0
-           security_1[12] :    0.0
-           security_1[13] :    0.0
-           security_1[14] :    0.0
-           security_1[15] :    0.0
-           security_1[16] :    0.0
-           security_1[17] :    0.0
-           security_1[18] :    0.0
-           security_1[19] :    0.0
-            security_1[1] :    0.0
-           security_1[20] :    0.0
-            security_1[2] :    0.0
-            security_1[3] :    0.0
-            security_1[4] :    0.0
-            security_1[5] :    0.0
-            security_1[6] :   -0.0
-            security_1[7] :    0.0
-            security_1[8] :   -0.0
-            security_1[9] :    0.0
-           security_2[10] :    0.0
-           security_2[11] :    0.0
-           security_2[12] :    0.0
-           security_2[13] :    0.0
-           security_2[14] :    0.0
-           security_2[15] :    0.0
-           security_2[16] :    0.0
-           security_2[17] :    0.0
-           security_2[18] :    0.0
-           security_2[19] :    0.0
-            security_2[1] :    0.0
-           security_2[20] :    0.0
-            security_2[2] :    0.0
-            security_2[3] :    0.0
-            security_2[4] :    0.0
-            security_2[5] :    0.0
-            security_2[6] :    0.0
-            security_2[7] :    0.0
-            security_2[8] :    0.0
-            security_2[9] :    0.0
+        Key                     : Value
+              contractual_1[10] :   9811.15252473
+              contractual_1[11] :   5295.36370363
+              contractual_1[12] :   5528.46649395
+              contractual_1[13] :   306.955108127
+              contractual_1[14] :             0.0
+              contractual_1[15] :   1904.26830622
+              contractual_1[16] :             0.0
+              contractual_1[17] :   5294.53135031
+              contractual_1[18] :   5294.53135031
+              contractual_1[19] :   431.492134013
+               contractual_1[1] :             0.0
+              contractual_1[20] :             0.0
+               contractual_1[2] :             0.0
+               contractual_1[3] :          3000.0
+               contractual_1[4] :            -0.0
+               contractual_1[5] :             0.0
+               contractual_1[6] :          3000.0
+               contractual_1[7] :          3000.0
+               contractual_1[8] :   8517.06625498
+               contractual_1[9] :   8517.06625498
+              contractual_2[10] :             0.0
+              contractual_2[11] :             0.0
+              contractual_2[12] :             0.0
+              contractual_2[13] :             0.0
+              contractual_2[14] :             0.0
+              contractual_2[15] :             0.0
+              contractual_2[16] :             0.0
+              contractual_2[17] :             0.0
+              contractual_2[18] :             0.0
+              contractual_2[19] :             0.0
+               contractual_2[1] :             0.0
+              contractual_2[20] :             0.0
+               contractual_2[2] :             0.0
+               contractual_2[3] :             0.0
+               contractual_2[4] :             0.0
+               contractual_2[5] :             0.0
+               contractual_2[6] :             0.0
+               contractual_2[7] :             0.0
+               contractual_2[8] :             0.0
+               contractual_2[9] :             0.0
+        gas_flow_linearized[12] :  -43.4777819401
+        gas_flow_linearized[13] :  -356.322757486
+        gas_flow_linearized[14] :  -54.3472343158
+        gas_flow_linearized[15] :  -445.403396323
+        gas_flow_linearized[16] :  -102.432149033
+        gas_flow_linearized[17] :  -97.5545136934
+        gas_flow_linearized[18] :  -12.1943074895
+        gas_flow_linearized[19] :  -24.3886149791
+         gas_flow_linearized[1] :             0.0
+        gas_flow_linearized[20] :  -60.9717055014
+        gas_flow_linearized[21] : -0.194384239326
+        gas_flow_linearized[23] :    -1836.300611
+        gas_flow_linearized[24] :  -112.426298596
+         gas_flow_linearized[2] :             0.0
+         gas_flow_linearized[3] :             0.0
+         gas_flow_linearized[4] :             0.0
+         gas_flow_linearized[5] :             0.0
+         gas_flow_linearized[6] :             0.0
+         gas_flow_linearized[7] :             0.0
+         gas_flow_linearized[8] :             0.0
+         gas_flow_linearized[9] :             0.0
+                  injection[10] :  -6811.15252473
+                  injection[11] :  -5295.36370363
+                  injection[12] :  -2528.46649395
+                  injection[13] :  -306.955108127
+                  injection[14] :             0.0
+                  injection[15] :   1095.73169378
+                  injection[16] :          3000.0
+                  injection[17] :  -5294.53135031
+                  injection[18] :  -5294.53135031
+                  injection[19] :   2568.50786599
+                   injection[1] :             0.0
+                  injection[20] :          3000.0
+                   injection[2] :             0.0
+                   injection[3] :             0.0
+                   injection[4] :             0.0
+                   injection[5] :             0.0
+                   injection[6] :             0.0
+                   injection[7] :             0.0
+                   injection[8] :  -8517.06625498
+                   injection[9] :  -8517.06625498
+              operational_1[10] :            0.02
+              operational_1[11] :             0.0
+              operational_1[22] :             0.0
+              operational_2[10] :             0.0
+              operational_2[11] :             0.0
+              operational_2[22] :             0.0
+              operational_3[10] :             0.0
+              operational_3[11] :            -0.0
+              operational_3[22] :             0.0
+                 security_1[10] :             0.0
+                 security_1[11] :             0.0
+                 security_1[12] :             0.0
+                 security_1[13] :             0.0
+                 security_1[14] :             0.0
+                 security_1[15] :             0.0
+                 security_1[16] :   88.4845778918
+                 security_1[17] :             0.0
+                 security_1[18] :             0.0
+                 security_1[19] :             0.0
+                  security_1[1] :             0.0
+                 security_1[20] :   3.12758720065
+                  security_1[2] :             0.0
+                  security_1[3] :             0.0
+                  security_1[4] :             0.0
+                  security_1[5] :             0.0
+                  security_1[6] :             0.0
+                  security_1[7] :             0.0
+                  security_1[8] :             0.0
+                  security_1[9] :             0.0
+                 security_2[10] :             0.0
+                 security_2[11] :             0.0
+                 security_2[12] :             0.0
+                 security_2[13] :             0.0
+                 security_2[14] :             0.0
+                 security_2[15] :             0.0
+                 security_2[16] :             0.0
+                 security_2[17] :             0.0
+                 security_2[18] :  -3.11758720065
+                 security_2[19] :             0.0
+                  security_2[1] :             0.0
+                 security_2[20] :             0.0
+                  security_2[2] :             0.0
+                  security_2[3] :             0.0
+                  security_2[4] :             0.0
+                  security_2[5] :             0.0
+                  security_2[6] :             0.0
+                  security_2[7] :             0.0
+                  security_2[8] :             0.0
+                  security_2[9] :  -88.4945778918
 
-31 Declarations: N d v Pi_m Pi_p Psi_m Psi_p P C E c rho_m rho_p kappa delta_index delta ref_phi pi psi phi gas_flow operational_1 operational_2 operational_3 security_1 security_2 injection contractual_1 contractual_2 objective dual
+31 Declarations: N d v Pi_m Pi_p Psi_m Psi_p P C E c rho_m rho_p kappa delta_index delta ref_phi pi psi phi gas_flow_linearized operational_1 operational_2 operational_3 security_1 security_2 injection contractual_1 contractual_2 objective dual

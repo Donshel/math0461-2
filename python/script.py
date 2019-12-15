@@ -6,7 +6,7 @@ import os
 
 from networkx import read_gpickle
 from pyomo.environ import ConcreteModel, Param, Set, Var, Constraint, Objective, NonNegativeReals, Reals, minimize, Suffix
-from pyomo.opt import SolverFactory
+from pyomo.opt import SolverFactory, ProblemFormat
 
 # Function
 
@@ -76,9 +76,9 @@ def pressure_diff(model, i):
     return sum(model.pi[j] * model.delta[j, i] for j in model.N)
 
 def gas_flow_linearized(model, i):
-    return model.c[i] * pressure_diff(model, i) + (2 * model.phi[i] - model.ref_phi[i]) * abs(model.ref_phi[i]) == 0
+    return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.ref_phi[i]) == 0
 
-model.gas_flow = Constraint(model.P, rule=gas_flow_linearized)
+model.gas_flow_linearized = Constraint(model.P, rule=gas_flow_linearized)
 
 def operational_1(model, i):
     return sum(model.pi[j] * (-model.rho_m[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) >= 0
@@ -136,11 +136,10 @@ results = opt.solve(model, tee=True, keepfiles=False)
 
 ## Write
 
-DIR = 'products/txt/'
+DIR = 'products/'
 os.makedirs(DIR, exist_ok=True)
 
 model.pprint(filename=DIR + 'linear_full.txt')
-
 model.display(filename=DIR + 'linear_sol.txt')
 
 with open(DIR + 'linear_dual.txt', 'w') as f:
@@ -149,3 +148,9 @@ with open(DIR + 'linear_dual.txt', 'w') as f:
             temp = model.dual[c[index]]
             if temp is not None and temp != 0:
                 print(c, '[{:d}]'.format(index), temp, file=f)
+
+model.write(filename=DIR + 'linear_model.lp',
+    format=ProblemFormat.cpxlp,
+    io_options={'symbolic_solver_labels': True}
+)
+model.write(filename=DIR + 'linear_model.mps', format=ProblemFormat.mps)
