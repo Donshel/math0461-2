@@ -19,127 +19,127 @@ objective:
 
 s.t.
 
-c_e_gas_flow_linearized(1)_:
+c_e_gas_flow_linear(1)_:
 +10.911288000000001 phi(1)
 -9.0702700000000007 pi(1)
 +9.0702700000000007 pi(2)
 = 0
 
-c_e_gas_flow_linearized(2)_:
+c_e_gas_flow_linear(2)_:
 +10.911288000000001 phi(2)
 -9.0702700000000007 pi(1)
 +9.0702700000000007 pi(2)
 = 0
 
-c_e_gas_flow_linearized(3)_:
+c_e_gas_flow_linear(3)_:
 +19.311288000000001 phi(3)
 -6.0468500000000001 pi(2)
 +6.0468500000000001 pi(3)
 = 0
 
-c_e_gas_flow_linearized(4)_:
+c_e_gas_flow_linear(4)_:
 +19.311288000000001 phi(4)
 -6.0468500000000001 pi(2)
 +6.0468500000000001 pi(3)
 = 0
 
-c_e_gas_flow_linearized(5)_:
+c_e_gas_flow_linear(5)_:
 +30.786576 phi(5)
 -1.3954299999999999 pi(3)
 +1.3954299999999999 pi(4)
 = 0
 
-c_e_gas_flow_linearized(6)_:
+c_e_gas_flow_linear(6)_:
 +5.6294240000000002 phi(6)
 -0.100256 pi(5)
 +0.100256 pi(6)
 = 0
 
-c_e_gas_flow_linearized(7)_:
+c_e_gas_flow_linear(7)_:
 +2.4385759999999999 phi(7)
 -0.14865500000000001 pi(6)
 +0.14865500000000001 pi(7)
 = 0
 
-c_e_gas_flow_linearized(8)_:
+c_e_gas_flow_linear(8)_:
 +12.950576 phi(8)
 +0.22689500000000001 pi(4)
 -0.22689500000000001 pi(7)
 = 0
 
-c_e_gas_flow_linearized(9)_:
+c_e_gas_flow_linear(9)_:
 +17.835999999999999 phi(9)
 +0.65965600000000002 pi(14)
 -0.65965600000000002 pi(4)
 = 0
 
-c_e_gas_flow_linearized(12)_:
+c_e_gas_flow_linear(12)_:
 +39.236448000000003 phi(12)
 +1.8140499999999999 pi(10)
 -1.8140499999999999 pi(9)
 = 0
 
-c_e_gas_flow_linearized(13)_:
+c_e_gas_flow_linear(13)_:
 +4.7875519999999998 phi(13)
 +0.027008399999999998 pi(10)
 -0.027008399999999998 pi(9)
 = 0
 
-c_e_gas_flow_linearized(14)_:
+c_e_gas_flow_linear(14)_:
 +27.890817999999999 phi(14)
 -1.4512400000000001 pi(10)
 +1.4512400000000001 pi(11)
 = 0
 
-c_e_gas_flow_linearized(15)_:
+c_e_gas_flow_linear(15)_:
 +3.4031820000000002 phi(15)
 -0.0216067 pi(10)
 +0.0216067 pi(11)
 = 0
 
-c_e_gas_flow_linearized(16)_:
+c_e_gas_flow_linear(16)_:
 +27.012 phi(16)
 -0.86383600000000005 pi(11)
 +0.86383600000000005 pi(12)
 = 0
 
-c_e_gas_flow_linearized(17)_:
+c_e_gas_flow_linear(17)_:
 +22.771999999999998 phi(17)
 -0.90702700000000003 pi(12)
 +0.90702700000000003 pi(13)
 = 0
 
-c_e_gas_flow_linearized(18)_:
+c_e_gas_flow_linear(18)_:
 +25.172000000000001 phi(18)
 -7.2562199999999999 pi(13)
 +7.2562199999999999 pi(14)
 = 0
 
-c_e_gas_flow_linearized(19)_:
+c_e_gas_flow_linear(19)_:
 +44.927999999999997 phi(19)
 -3.6281099999999999 pi(14)
 +3.6281099999999999 pi(15)
 = 0
 
-c_e_gas_flow_linearized(20)_:
+c_e_gas_flow_linear(20)_:
 +31.231999999999999 phi(20)
 -1.4512400000000001 pi(15)
 +1.4512400000000001 pi(16)
 = 0
 
-c_e_gas_flow_linearized(21)_:
+c_e_gas_flow_linear(21)_:
 +4.282 phi(21)
 -0.051444499999999997 pi(11)
 +0.051444499999999997 pi(17)
 = 0
 
-c_e_gas_flow_linearized(23)_:
+c_e_gas_flow_linear(23)_:
 +4.282 phi(23)
 -0.0017032 pi(18)
 +0.0017032 pi(19)
 = 0
 
-c_e_gas_flow_linearized(24)_:
+c_e_gas_flow_linear(24)_:
 +3.8380000000000001 phi(24)
 -0.027819 pi(19)
 +0.027819 pi(20)

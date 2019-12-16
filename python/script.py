@@ -8,14 +8,20 @@ from networkx import read_gpickle
 from pyomo.environ import ConcreteModel, Param, Set, Var, Constraint, Objective, NonNegativeReals, Reals, minimize, Suffix
 from pyomo.opt import SolverFactory, ProblemFormat
 
+from gurobipy import read
+
 # Function
 
 def square(d):
     return dict([(key, value ** 2) for (key, value) in d.items()])
 
+#########################
+# 1. Problem definition #
+#########################
+
 # Data
 
-network = read_gpickle('test_network.instance')
+network = read_gpickle('resources/instance/test_network.instance')
 
 # Model Object Creation
 
@@ -75,21 +81,21 @@ model.phi = Var(model.E, within=Reals)
 def pressure_diff(model, i):
     return sum(model.pi[j] * model.delta[j, i] for j in model.N)
 
-def gas_flow_linearized(model, i):
+def gas_flow(model, i):
+    return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.phi[i]) == 0
+
+def gas_flow_linear(model, i):
     return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.ref_phi[i]) == 0
 
 def gas_flow_conic(model, i):
     return model.c[i] * pressure_diff(model, i) + model.phi[i] ** 2 <= 0
 
-def gas_flow(model, i):
-    return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.phi[i]) <= 0
-
-model.gas_flow_linearized = Constraint(model.P, rule=gas_flow_linearized)
-model.gas_flow_conic = Constraint(model.P, rule=gas_flow_conic)
 model.gas_flow = Constraint(model.P, rule=gas_flow)
+model.gas_flow_linear = Constraint(model.P, rule=gas_flow_linear)
+model.gas_flow_conic = Constraint(model.P, rule=gas_flow_conic)
 
+model.gas_flow_linear.deactivate()
 model.gas_flow_conic.deactivate()
-model.gas_flow.deactivate()
 
 def operational_1(model, i):
     return sum(model.pi[j] * (-model.rho_m[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) >= 0
@@ -140,92 +146,88 @@ model.objective = Objective(rule=objective, sense=minimize)
 
 model.dual = Suffix(direction=Suffix.IMPORT)
 
-# Write .lp
+####################
+# 3. Linearization #
+####################
+
+model.gas_flow.deactivate()
+model.gas_flow_linear.activate()
+
+linear = model.clone()
+
+opt = SolverFactory('gurobi')
+results = opt.solve(linear, keepfiles=False)
 
 DIR = 'products/'
+os.makedirs(DIR, exist_ok=True)
+
+linear.display(filename=DIR + 'linear_solultion.txt')
+
+###########
+# 4. Dual #
+###########
+
+with open(DIR + 'linear_dual.txt', 'w') as f:
+    for c in linear.component_objects(Constraint, active=True):
+        for index in c:
+            temp = linear.dual[c[index]]
+            if temp is not None and temp != 0:
+                print(c, '[{:d}]'.format(index), temp, file=f)
+
+###########################
+# 5. Sensibility analysis #
+###########################
 
 model.write(filename=DIR + 'linear_model.lp',
     format=ProblemFormat.cpxlp,
     io_options={'symbolic_solver_labels': True}
 )
 
-#####
-# 3 #
-#####
+gmodel = read('products/linear_model.lp')
+gmodel.optimize()
 
-instance = model.create_instance()
+with open(DIR + 'linear_sensitivity.txt', 'w') as f:
+    print('Constraint', 'Shadow Price', 'Slack', 'Lower Range', 'Higher Range', file=f)
+    for c in gmodel.getConstrs():
+        print(c.ConstrName, c.Pi, c.Slack, c.SARHSLow, c.SARHSUp, file=f)
 
-opt = SolverFactory('gurobi')
-results = opt.solve(instance, tee=True, keepfiles=False)
-
-## Write
-
-os.makedirs(DIR, exist_ok=True)
-
-instance.pprint(filename=DIR + 'linear_full.txt')
-instance.display(filename=DIR + 'linear_sol.txt')
-
-with open(DIR + 'linear_dual.txt', 'w') as f:
-    for c in instance.component_objects(Constraint, active=True):
-        for index in c:
-            temp = instance.dual[c[index]]
-            if temp is not None and temp != 0:
-                print(c, '[{:d}]'.format(index), temp, file=f)
-
-#####
-# 6 #
-#####
+#######################
+# 6. Conic relaxation #
+#######################
 
 model.reconstruct()
 
 for i in model.P:
-    sign = np.sign(instance.phi[i].value)
+    sign = np.sign(linear.phi[i].value)
     for j in model.N:
         model.delta[j, i] *= sign
 
-model.gas_flow_linearized.deactivate()
+model.gas_flow_linear.deactivate()
 model.gas_flow_conic.activate()
 
-instance = model.create_instance()
+conic = model.clone()
 
-results = opt.solve(instance, tee=True, keepfiles=False)
+results = opt.solve(conic, keepfiles=False)
 
-## Write
+conic.display(filename=DIR + 'conic_solution.txt')
 
-os.makedirs(DIR, exist_ok=True)
+#################
+# 7. Non linear #
+#################
 
-instance.pprint(filename=DIR + 'conic_full.txt')
-instance.display(filename=DIR + 'conic_sol.txt')
+model.reconstruct()
 
-with open(DIR + 'conic_dual.txt', 'w') as f:
-    for c in instance.component_objects(Constraint, active=True):
-        for index in c:
-            temp = instance.dual[c[index]]
-            if temp is not None and temp != 0:
-                print(c, '[{:d}]'.format(index), temp, file=f)
-
-#####
-# 7 #
-#####
+for i in model.P:
+    sign = np.sign(linear.phi[i].value)
+    for j in model.N:
+        model.delta[j, i] *= sign
 
 model.gas_flow_conic.deactivate()
 model.gas_flow.activate()
 
-instance = model.create_instance()
+nonlinear = model.clone()
 
-opt = SolverFactory('ipopt')
-results = opt.solve(instance, tee=True, keepfiles=False)
+opt = SolverFactory('bin/ipopt', solver_io='nl')
+results = opt.solve(nonlinear, keepfiles=False)
 
-## Write
-
-os.makedirs(DIR, exist_ok=True)
-
-instance.pprint(filename=DIR + 'ipopt_full.txt')
-instance.display(filename=DIR + 'ipopt_sol.txt')
-
-with open(DIR + 'ipopt_dual.txt', 'w') as f:
-    for c in instance.component_objects(Constraint, active=True):
-        for index in c:
-            temp = instance.dual[c[index]]
-            if temp is not None and temp != 0:
-                print(c, '[{:d}]'.format(index), temp, file=f)
+nonlinear.display(filename=DIR + 'nonlinear_solution.txt')
