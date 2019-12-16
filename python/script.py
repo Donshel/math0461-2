@@ -58,7 +58,7 @@ temp = {}
 for (i, j), value in np.ndenumerate(network.incidence_matrix):
     temp[i + 1, j + 1] = value
 
-model.delta = Param(model.N, model.E, initialize=temp)
+model.delta = Param(model.N, model.E, initialize=temp, mutable=True)
 
 ## Reference flows
 
@@ -78,7 +78,18 @@ def pressure_diff(model, i):
 def gas_flow_linearized(model, i):
     return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.ref_phi[i]) == 0
 
+def gas_flow_conic(model, i):
+    return model.c[i] * pressure_diff(model, i) + model.phi[i] ** 2 <= 0
+
+def gas_flow(model, i):
+    return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.phi[i]) <= 0
+
 model.gas_flow_linearized = Constraint(model.P, rule=gas_flow_linearized)
+model.gas_flow_conic = Constraint(model.P, rule=gas_flow_conic)
+model.gas_flow = Constraint(model.P, rule=gas_flow)
+
+model.gas_flow_conic.deactivate()
+model.gas_flow.deactivate()
 
 def operational_1(model, i):
     return sum(model.pi[j] * (-model.rho_m[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) >= 0
@@ -129,28 +140,92 @@ model.objective = Objective(rule=objective, sense=minimize)
 
 model.dual = Suffix(direction=Suffix.IMPORT)
 
-# Solve
-
-opt = SolverFactory("gurobi")
-results = opt.solve(model, tee=True, keepfiles=False)
-
-## Write
+# Write .lp
 
 DIR = 'products/'
-os.makedirs(DIR, exist_ok=True)
-
-model.pprint(filename=DIR + 'linear_full.txt')
-model.display(filename=DIR + 'linear_sol.txt')
-
-with open(DIR + 'linear_dual.txt', 'w') as f:
-    for c in model.component_objects(Constraint, active=True):
-        for index in c:
-            temp = model.dual[c[index]]
-            if temp is not None and temp != 0:
-                print(c, '[{:d}]'.format(index), temp, file=f)
 
 model.write(filename=DIR + 'linear_model.lp',
     format=ProblemFormat.cpxlp,
     io_options={'symbolic_solver_labels': True}
 )
-model.write(filename=DIR + 'linear_model.mps', format=ProblemFormat.mps)
+
+#####
+# 3 #
+#####
+
+instance = model.create_instance()
+
+opt = SolverFactory('gurobi')
+results = opt.solve(instance, tee=True, keepfiles=False)
+
+## Write
+
+os.makedirs(DIR, exist_ok=True)
+
+instance.pprint(filename=DIR + 'linear_full.txt')
+instance.display(filename=DIR + 'linear_sol.txt')
+
+with open(DIR + 'linear_dual.txt', 'w') as f:
+    for c in instance.component_objects(Constraint, active=True):
+        for index in c:
+            temp = instance.dual[c[index]]
+            if temp is not None and temp != 0:
+                print(c, '[{:d}]'.format(index), temp, file=f)
+
+#####
+# 6 #
+#####
+
+model.reconstruct()
+
+for i in model.P:
+    sign = np.sign(instance.phi[i].value)
+    for j in model.N:
+        model.delta[j, i] *= sign
+
+model.gas_flow_linearized.deactivate()
+model.gas_flow_conic.activate()
+
+instance = model.create_instance()
+
+results = opt.solve(instance, tee=True, keepfiles=False)
+
+## Write
+
+os.makedirs(DIR, exist_ok=True)
+
+instance.pprint(filename=DIR + 'conic_full.txt')
+instance.display(filename=DIR + 'conic_sol.txt')
+
+with open(DIR + 'conic_dual.txt', 'w') as f:
+    for c in instance.component_objects(Constraint, active=True):
+        for index in c:
+            temp = instance.dual[c[index]]
+            if temp is not None and temp != 0:
+                print(c, '[{:d}]'.format(index), temp, file=f)
+
+#####
+# 7 #
+#####
+
+model.gas_flow_conic.deactivate()
+model.gas_flow.activate()
+
+instance = model.create_instance()
+
+opt = SolverFactory('ipopt')
+results = opt.solve(instance, tee=True, keepfiles=False)
+
+## Write
+
+os.makedirs(DIR, exist_ok=True)
+
+instance.pprint(filename=DIR + 'ipopt_full.txt')
+instance.display(filename=DIR + 'ipopt_sol.txt')
+
+with open(DIR + 'ipopt_dual.txt', 'w') as f:
+    for c in instance.component_objects(Constraint, active=True):
+        for index in c:
+            temp = instance.dual[c[index]]
+            if temp is not None and temp != 0:
+                print(c, '[{:d}]'.format(index), temp, file=f)
