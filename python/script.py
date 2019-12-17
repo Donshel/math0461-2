@@ -48,10 +48,10 @@ model.Pi_p = Param(model.N, initialize=square(network.maximum_pressure_bounds))
 Psi_m = network.minimum_nodal_injections
 Psi_p = network.maximum_nodal_injections
 
-for key in model.N:
-    if model.d[key] != 0:
-        Psi_m[key] = -model.d[key]
-        Psi_p[key] = 0
+for i in model.N:
+    if model.d[i] != 0:
+        Psi_m[i] = -model.d[i]
+        Psi_p[i] = 0
 
 model.Psi_m = Param(model.N, initialize=Psi_m)
 model.Psi_p = Param(model.N, initialize=Psi_p)
@@ -93,17 +93,18 @@ def gas_flow(model, i):
     return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.phi[i]) == 0
 
 def gas_flow_linear(model, i):
+    # return model.c[i] * pressure_diff(model, i) + (2 * model.phi[i] - model.ref_phi[i]) * abs(model.ref_phi[i]) == 0
     return model.c[i] * pressure_diff(model, i) + model.phi[i] * abs(model.ref_phi[i]) == 0
 
-def gas_flow_conic(model, i):
+def gas_flow_convex(model, i):
     return model.c[i] * pressure_diff(model, i) + model.phi[i] ** 2 <= 0
 
 model.gas_flow = Constraint(model.P, rule=gas_flow)
 model.gas_flow_linear = Constraint(model.P, rule=gas_flow_linear)
-model.gas_flow_conic = Constraint(model.P, rule=gas_flow_conic)
+model.gas_flow_convex = Constraint(model.P, rule=gas_flow_convex)
 
 model.gas_flow_linear.deactivate()
-model.gas_flow_conic.deactivate()
+model.gas_flow_convex.deactivate()
 
 def operational_1(model, i):
     return sum(model.pi[j] * (-model.rho_m[i] if model.delta[j, i] == -1 else model.delta[j, i]) for j in model.N) >= 0
@@ -150,14 +151,15 @@ def objective(model):
 
 model.objective = Objective(rule=objective, sense=minimize)
 
+
 ####################
 # 3. Linearization #
 ####################
 
-model.gas_flow.deactivate()
-model.gas_flow_linear.activate()
-
 linear = model.clone()
+
+linear.gas_flow.deactivate()
+linear.gas_flow_linear.activate()
 
 opt = SolverFactory('gurobi')
 results = opt.solve(linear, keepfiles=False)
@@ -165,13 +167,14 @@ results = opt.solve(linear, keepfiles=False)
 DIR = 'products/'
 os.makedirs(DIR, exist_ok=True)
 
-linear.display(filename=DIR + 'linear_solultion.txt')
+linear.display(filename=DIR + 'linear_solution.txt')
+
 
 ###############################################
 # 4. Dual variables & 5. Sensitivity analysis #
 ###############################################
 
-model.write(filename=DIR + 'linear_model.lp',
+linear.write(filename=DIR + 'linear_model.lp',
     format=ProblemFormat.cpxlp,
     io_options={'symbolic_solver_labels': True}
 )
@@ -196,50 +199,43 @@ with open(DIR + 'linear_constraints.txt', 'w') as f:
     pd.set_option('display.width', None)
     print(constrs, file=f)
 
-#######################
-# 6. Conic relaxation #
-#######################
 
-model.reconstruct()
+########################
+# 6. Convex relaxation #
+########################
 
-for i in model.P:
+convex = model.clone()
+convex.reconstruct()
+
+for i in convex.P:
     sign = np.sign(linear.phi[i].value)
-    for j in model.N:
-        model.delta[j, i] *= sign
+    for j in convex.N:
+        convex.delta[j, i] *= sign
 
-model.gas_flow_linear.deactivate()
-model.gas_flow_conic.activate()
+convex.gas_flow.deactivate()
+convex.gas_flow_convex.activate()
 
-conic = model.clone()
+results = opt.solve(convex, keepfiles=False)
 
-results = opt.solve(conic, keepfiles=False)
+convex.display(filename=DIR + 'convex_solution.txt')
 
-conic.display(filename=DIR + 'conic_solution.txt')
 
 #################
-# 7. Non linear #
+# 7. Non-linear #
 #################
-
-model.reconstruct()
-
-for i in model.P:
-    sign = np.sign(linear.phi[i].value)
-    for j in model.N:
-        model.delta[j, i] *= sign
-
-model.gas_flow_conic.deactivate()
-model.gas_flow.activate()
-
-nonlinear = model.clone()
 
 opt = SolverFactory('bin/ipopt', solver_io='nl')
-results = opt.solve(nonlinear, keepfiles=False)
+# opt.options['tol'] = 1e-16
+results = opt.solve(model, keepfiles=False)
 
-nonlinear.display(filename=DIR + 'nonlinear_solution.txt')
+model.display(filename=DIR + 'non-linear_solution.txt')
+
 
 #########
 # Plots #
 #########
+
+# Solutions
 
 N = len(model.N)
 E = len(model.E)
@@ -250,32 +246,24 @@ phi = np.zeros((E, 3))
 
 for i in model.N:
     pi[i - 1, 0] = linear.pi[i].value
-    pi[i - 1, 1] = conic.pi[i].value
-    pi[i - 1, 2] = nonlinear.pi[i].value
+    pi[i - 1, 1] = convex.pi[i].value
+    pi[i - 1, 2] = model.pi[i].value
 
     psi[i - 1, 0] = linear.psi[i].value
-    psi[i - 1, 1] = conic.psi[i].value
-    psi[i - 1, 2] = nonlinear.psi[i].value
+    psi[i - 1, 1] = convex.psi[i].value
+    psi[i - 1, 2] = model.psi[i].value
 
 for i in model.E:
     phi[i - 1, 0] = linear.phi[i].value
-    phi[i - 1, 1] = conic.phi[i].value
-    phi[i - 1, 2] = nonlinear.phi[i].value
-
-dual = []
-
-for c in gmodel.getConstrs():
-    if 'injection' in c.ConstrName:
-        dual.append(c.Pi)
-
-dual = np.array(dual)
+    phi[i - 1, 1] = convex.phi[i].value
+    phi[i - 1, 2] = model.phi[i].value
 
 DIR = 'products/pdf/'
 
 os.makedirs(DIR, exist_ok=True)
 
 lineObjects = plt.plot(np.arange(1, N + 1), pi)
-plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.legend(lineObjects, ('linear', 'convex', 'non-linear'))
 plt.xlabel('$i$')
 plt.ylabel('$\\pi_i$')
 plt.xticks(np.arange(1, N + 1))
@@ -284,7 +272,7 @@ plt.savefig(DIR + '{}.pdf'.format('pi'), bbox_inches='tight')
 plt.close()
 
 lineObjects = plt.plot(np.arange(1, N + 1), psi)
-plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.legend(lineObjects, ('linear', 'convex', 'non-linear'))
 plt.xlabel('$i$')
 plt.ylabel('$\\psi_i$')
 plt.xticks(np.arange(1, N + 1))
@@ -293,13 +281,23 @@ plt.savefig(DIR + '{}.pdf'.format('psi'), bbox_inches='tight')
 plt.close()
 
 lineObjects = plt.plot(np.arange(1, E + 1), phi)
-plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.legend(lineObjects, ('linear', 'convex', 'non-linear'))
 plt.xlabel('$i$')
 plt.ylabel('$\\phi_i$')
 plt.xticks(np.arange(1, E + 1))
 plt.grid()
 plt.savefig(DIR + '{}.pdf'.format('phi'), bbox_inches='tight')
 plt.close()
+
+# Dual variables
+
+dual = []
+
+for c in gmodel.getConstrs():
+    if 'injection' in c.ConstrName:
+        dual.append(c.Pi)
+
+dual = np.array(dual)
 
 plt.bar(np.arange(1, dual.shape[0] + 1), dual)
 plt.xlabel('$i$')

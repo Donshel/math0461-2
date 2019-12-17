@@ -78,7 +78,7 @@ Model unknown
         None :   True : 1.1240000276302453e-07
 
   Constraints:
-    gas_flow_conic : Size=21
+    gas_flow_convex : Size=21
         Key : Lower : Body                 : Upper
           1 :  None :  -428.30414018043183 :   0.0
           2 :  None :  -428.30414018043183 :   0.0
