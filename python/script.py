@@ -3,12 +3,20 @@
 
 import numpy as np
 import os
+import pandas as pd
 
 from networkx import read_gpickle
 from pyomo.environ import ConcreteModel, Param, Set, Var, Constraint, Objective, NonNegativeReals, Reals, minimize, Suffix
 from pyomo.opt import SolverFactory, ProblemFormat
 
 from gurobipy import read
+
+from matplotlib import rc
+from matplotlib import pyplot as plt
+
+rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+rc('text', usetex=True)
+plt.rcParams.update({'font.size': 12})
 
 # Function
 
@@ -142,10 +150,6 @@ def objective(model):
 
 model.objective = Objective(rule=objective, sense=minimize)
 
-# Dual
-
-model.dual = Suffix(direction=Suffix.IMPORT)
-
 ####################
 # 3. Linearization #
 ####################
@@ -163,20 +167,9 @@ os.makedirs(DIR, exist_ok=True)
 
 linear.display(filename=DIR + 'linear_solultion.txt')
 
-###########
-# 4. Dual #
-###########
-
-with open(DIR + 'linear_dual.txt', 'w') as f:
-    for c in linear.component_objects(Constraint, active=True):
-        for index in c:
-            temp = linear.dual[c[index]]
-            if temp is not None and temp != 0:
-                print(c, '[{:d}]'.format(index), temp, file=f)
-
-###########################
-# 5. Sensibility analysis #
-###########################
+###############################################
+# 4. Dual variables & 5. Sensitivity analysis #
+###############################################
 
 model.write(filename=DIR + 'linear_model.lp',
     format=ProblemFormat.cpxlp,
@@ -186,10 +179,22 @@ model.write(filename=DIR + 'linear_model.lp',
 gmodel = read('products/linear_model.lp')
 gmodel.optimize()
 
-with open(DIR + 'linear_sensitivity.txt', 'w') as f:
-    print('Constraint', 'Shadow Price', 'Slack', 'Lower Range', 'Higher Range', file=f)
-    for c in gmodel.getConstrs():
-        print(c.ConstrName, c.Pi, c.Slack, c.SARHSLow, c.SARHSUp, file=f)
+constrs = {'Name':[], 'Dual':[], 'Slack':[], 'Lower':[], 'Upper':[]}
+
+for c in gmodel.getConstrs():
+    constrs['Name'].append(c.ConstrName)
+    constrs['Dual'].append(c.Pi)
+    constrs['Slack'].append(c.Slack)
+    constrs['Lower'].append(c.SARHSLow)
+    constrs['Upper'].append(c.SARHSUp)
+
+constrs = pd.DataFrame(constrs)
+
+with open(DIR + 'linear_constraints.txt', 'w') as f:
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', None)
+    print(constrs, file=f)
 
 #######################
 # 6. Conic relaxation #
@@ -231,3 +236,74 @@ opt = SolverFactory('bin/ipopt', solver_io='nl')
 results = opt.solve(nonlinear, keepfiles=False)
 
 nonlinear.display(filename=DIR + 'nonlinear_solution.txt')
+
+#########
+# Plots #
+#########
+
+N = len(model.N)
+E = len(model.E)
+
+pi = np.zeros((N, 3))
+psi = np.zeros((N, 3))
+phi = np.zeros((E, 3))
+
+for i in model.N:
+    pi[i - 1, 0] = linear.pi[i].value
+    pi[i - 1, 1] = conic.pi[i].value
+    pi[i - 1, 2] = nonlinear.pi[i].value
+
+    psi[i - 1, 0] = linear.psi[i].value
+    psi[i - 1, 1] = conic.psi[i].value
+    psi[i - 1, 2] = nonlinear.psi[i].value
+
+for i in model.E:
+    phi[i - 1, 0] = linear.phi[i].value
+    phi[i - 1, 1] = conic.phi[i].value
+    phi[i - 1, 2] = nonlinear.phi[i].value
+
+dual = []
+
+for c in gmodel.getConstrs():
+    if 'injection' in c.ConstrName:
+        dual.append(c.Pi)
+
+dual = np.array(dual)
+
+DIR = 'products/pdf/'
+
+os.makedirs(DIR, exist_ok=True)
+
+lineObjects = plt.plot(np.arange(1, N + 1), pi)
+plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.xlabel('$i$')
+plt.ylabel('$\\pi_i$')
+plt.xticks(np.arange(1, N + 1))
+plt.grid()
+plt.savefig(DIR + '{}.pdf'.format('pi'), bbox_inches='tight')
+plt.close()
+
+lineObjects = plt.plot(np.arange(1, N + 1), psi)
+plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.xlabel('$i$')
+plt.ylabel('$\\psi_i$')
+plt.xticks(np.arange(1, N + 1))
+plt.grid()
+plt.savefig(DIR + '{}.pdf'.format('psi'), bbox_inches='tight')
+plt.close()
+
+lineObjects = plt.plot(np.arange(1, E + 1), phi)
+plt.legend(lineObjects, ('linear', 'conic', 'non-linear'))
+plt.xlabel('$i$')
+plt.ylabel('$\\phi_i$')
+plt.xticks(np.arange(1, E + 1))
+plt.grid()
+plt.savefig(DIR + '{}.pdf'.format('phi'), bbox_inches='tight')
+plt.close()
+
+plt.bar(np.arange(1, dual.shape[0] + 1), dual)
+plt.xlabel('$i$')
+plt.ylabel('dual$_i$')
+plt.xticks(np.arange(1, N + 1))
+plt.savefig(DIR + '{}.pdf'.format('dual'), bbox_inches='tight')
+plt.close()
