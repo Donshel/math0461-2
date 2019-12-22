@@ -1,0 +1,242 @@
+\documentclass[a4paper, 12pt]{article}
+
+\def\languages{french, english}
+
+%%%%%%%%%%%%%%%%%%% Libraries
+
+\input{./include/libraries/default.tex}
+\input{./include/libraries/figures}
+\input{./include/libraries/mathematics.tex}
+\input{./include/libraries/theorems.tex}
+\input{./include/libraries/units.tex}
+
+%%%%%%%%%%%%%%%%%%% Titlepage
+
+\title{\vspace{-2cm}Introduction to numerical optimization - Project \\[0.25em]Gas Flow Routing and Network Control}
+\author{
+Louis \textsc{Nelissen} (s160708)\\
+François \textsc{Rozet} (s161024)\\
+}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%
+
+\def\under{\textunderscore}
+
+%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\section{Mathematical program}
+
+Let $i$ be a node of the set $N$ ($i \in N$) and
+\begin{align*}
+    d_i & = nodal\under{}demands(i) \\
+    v_i & = value\under{}unserved\under{}demand(i) \\
+    \Pi^-_i & = minimum\under{}pressure\under{}bounds(i)^2\\
+    \Pi^+_i & = maximum\under{}pressure\under{}bounds(i)^2\\
+    \Psi^-_i & = minimum\under{}nodal\under{}injections(i) \\
+    \Psi^+_i & = maximum\under{}nodal\under{}injections(i)
+\end{align*}
+
+However, it is imposed that
+\begin{align*}
+    \Psi_i^- & = -d_i \\
+    \Psi_i^+ & = 0
+\end{align*}
+if $d_i \neq 0$.
+
+Let $i$ be a pipe of the set $P$ or a compressor of the set $C$ ($i \in E = P \cup C$) and
+\begin{align*}
+    c_i & = friction\under{}coefficients(i) \\
+    \rho^-_i & = minimum\under{}pressure\under{}ratio(i)^2 \\
+    \rho^+_i & = maximum\under{}pressure\under{}ratio(i)^2 \\
+    \kappa_i & = compression\under{}costs(i)
+\end{align*}
+
+Let be a pair $(i, j) \in N \times E$ and
+\begin{align*}
+    \delta_{i,j} & = incidence(i, j)
+\end{align*}
+
+\newpage
+
+\subsection{Constraints}
+
+Let $\pi_i \in \Rl_+$ denote the \emph{squared} pressure at node $i \in N$ and $\phi_{i} \in \Rl$ denote the gas flows within the pipe/compressor $i \in E$.
+
+For each pipe $i \in P$, we have
+\begin{align} \label{eq:flow}
+    c_i \sum_{j \, \in \, N} -\delta_{j, i} \, \pi_j = \phi_i \abs{\phi_i}
+\end{align}
+For each compressor $i \in C$, we have
+\begin{align}
+    \rho^-_i & \leq \prod_{j \, \in \, N} \pi_j^{\delta_{j, i}} \footnotemark \leq \rho^+_i \\
+    \phi_i & \geq 0
+\end{align} \footnotetext{This expression is just a fancy way to define the ratio of output and input pressures.}
+For any node $i \in N$, we have
+\begin{align}
+   \Pi^-_i & \leq \pi_i \leq \Pi^+_i \\
+   \Psi_i^- & \leq \psi_i \leq \Psi_i^+
+\end{align}
+where
+\begin{align}
+    \psi_i & = -\sum_{j \, \in \, E} \delta_{i, j} \, \phi_j
+    \label{eq:balance}
+\end{align}
+is the \emph{injection} of $i$.
+
+\subsection{Objective}
+
+For each compressor $i \in C$, we have the cost
+\begin{align}
+   \kappa_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j
+\end{align}
+For each node $i \in N$, we have the penalty
+\begin{align}
+   v_i \rbk{d_i + \psi_i}
+\end{align}
+
+\subsection{Full problem}
+
+More formally, we wish to solve
+\begin{equation}\label{eq:system}
+    \begin{aligned}
+        \min_{\pi, \, \phi, \, \psi} && \quad &  \sum_{i \, \in \, C} \kappa_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j + \sum_{i \, \in \, N} v_i \rbk{d_i + \psi_i} \\
+        \text{s.t.} &&& \\
+        &&&
+        \left\{\begin{aligned}
+            c_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j + \phi_i \abs{\phi_i} = 0
+        \end{aligned}\right. && \forall \, i \in P \\[0.5em]
+        &&&
+        \left\{\begin{aligned}
+            \pi_k - \rho^-_i \pi_j & \geq 0 \\
+            \pi_k - \rho^+_i \pi_j & \leq 0 \\
+            \phi_i & > 0
+        \end{aligned}\right. && 
+        \begin{aligned}
+            & \forall \, (i, j, k) \in C \times N^2 : \\
+            & \delta_{j, i} = -1 \text{ and } \delta_{k, i} = 1
+        \end{aligned} \\[0.5em]
+        &&&
+        \left\{\begin{aligned}
+            \pi_i & \geq \Pi^-_i \\
+            \pi_i & \leq \Pi^+_i \\
+            \psi_i & \geq \Psi_i^- \\
+            \psi_i & \leq \Psi_i^+ \\
+            \psi_i & = -\sum_{j \, \in \, E} \delta_{i, j} \, \phi_j
+        \end{aligned}\right. && \forall \, i \in N
+    \end{aligned}
+\end{equation}
+where $\pi = (\pi_i)$, $\phi = (\phi_i)$ and $\psi = (\psi_i)$.
+
+\section{Structure}
+
+If the objective function and all other constraints are clearly linear, i.e. they are linear combinations of the vector variables $\pi$, $\phi$ and $\psi$, it is not the case of the gas flow equation \ref{eq:flow}. Indeed, the term $\phi_i \abs{\phi_i}$ is quadratic. Furthermore, since this equation is an \emph{equality} instead of an \emph{inequality}, it doesn't define a convex feasible set. Therefore this optimization problem is non-linear.
+
+\section{Linearization around reference flows}
+
+Around a reference flow $\bar{\phi}_i$, the term $\phi_i \abs{\phi_i}$ of the gas flow equation can\footnotemark be linearized as $\phi_i \abs{\bar{\phi}_i}$. Since \eqref{eq:flow} was the only non-linear constraint, this approximation leads to a linear optimization problem which can be solved using the \texttt{Gurobi} solver. We decided to implement the problem using the \texttt{pyomo} library. The results we obtained were written in the \texttt{linear\_solution.txt} file and are reported in Figures \ref{fig:pi}, \ref{fig:phi} and \ref{fig:psi} along with the results of sections \ref{sec:convex} and \ref{sec:non-linear}. The optimal objective is \num{8206.94}.
+
+\footnotetext{
+We also tried to linearize this term using a first order Taylor series. $$\phi_i \abs{\phi_i} = f(\phi_i) \simeq f(\bar{\phi}_i) + (\phi_i - \bar{\phi}_i) \frac{\partial f}{\partial \phi_i} (\bar{\phi}_i) = \bar{\phi}_i \abs{\bar{\phi}_i} + 2 (\phi_i - \bar{\phi}_i) \abs{\bar{\phi}_i} = (2 \phi_i - \bar{\phi}_i) \abs{\bar{\phi}_i}$$
+However, this approximation produced absurd results (with our definition of the problem), allowing gas flows without pressure differential. In contrast, the fact that $\phi_i \abs{\bar{\phi}_i}$ is odd, like $\phi_i \abs{\phi_i}$, disallows such behaviour.
+}
+
+\section{Dual variables}
+
+The resulting dual variables of the balance equations (in our case \eqref{eq:balance}) can be found in the \texttt{linear\_constraints.txt} file. We have represented these values in Figure \ref{fig:dual}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./resources/pdf/dual.pdf}
+    \caption{Dual variables of balance equation at every nodes.}
+    \label{fig:dual}
+\end{figure}
+
+Conceptually, dual variables represent the impact of a constraint on the objective function. The addition of $\varepsilon$ to the right-hand side of the constraint (if it remains in the feasible range of the basis) corresponds to adding the value of the dual times $\varepsilon$ to the objective function. For the balance equations, we could interpret such addition to the RHS as an imbalance between the incoming and outgoing gas flows, for example a gas leak.
+
+Consequently, all constraints presenting null dual variables (as the few in Figure \ref{fig:dual}) have no impact on the objective function. Therefore, a gas leak or surplus at these nodes wouldn't impact the rest of the network. For constraints with positive dual variables, such leak (positive $\varepsilon$) would increase the objective function. Since our problem is a minimization one, it means that gas leaks at this nodes would harden the problem.
+
+Conversely, for constraints with negative dual variables, such leak would benefit the gas network. This may seem counter-intuitive, but is actually common for transport networks. Indeed, in case of infrastructures overload, there is sometimes no better choice that throwing away part of the production or paying \og{}someone\fg{} to take care of the surplus. For example, electrical grids sometimes offer negative prices for electricity.
+
+Also, in Figure \ref{fig:dual}, we see that some nodes have the exact same dual value, namely node 8 and 9, nodes 17 and 18 and nodes 16 and 20. For nodes 8 and 9, we can see from the network map (Figure 1 in the statement) that transit node 9 is the only one connected to the entry node 8. Therefore, an imbalance at node 8 would have the same effect on the network as an imbalance at node 9, hence the dual variables. The same reasoning can be applied to the the pair of nodes 17 and 18. For the last two, we observe that their value (\num{3000}) is equal to the value of the unserved demand at these points, which happen to be equal.
+
+\section{Sensitivity Analysis}
+
+To identify the minimum squared pressure bound value at node 16 to satisfy all nominations, we needed to perform a sensitivity analysis on that particular constraint. This is thankfully automatically done by \texttt{Gurobi} when solving the model and stored in specific attributes of the constraint, namely the \texttt{SARHSLow} attribute which stores the smallest right-hand side value at which the current optimal basis would remain optimal.
+
+In practice, as we were working with \texttt{Pyomo}, we exported the linearized model as an \texttt{lp} file which we directly re-imported and solved using \texttt{Gurobi}. Finally, we looked up the associated constraint and found that the minimum squared pressure bound value was \num{2436.7338}, that is \num{49.3632} for the actual pressure.
+
+\section{Convex relaxation} \label{sec:convex}
+
+Assuming a fixed gas flow direction is equivalent to reducing the space domain of each $\phi_i$ to either $\Rl^+$ or $\Rl^-$. Since the flow is defined with respect to the imposed direction of its support (pipe or compressor), we can simply revert the direction of the latter if the flow domain is $\Rl^-$. In practice this is done by updating the incidence matrix as follows
+$$\delta_{i, j} \mapsto \delta_{i, j} \, \mathrm{sign}\rbk{\phi_j} \, .$$ 
+As a result, all $\phi_i$ now belongs to $\Rl^+$ and the gas flow equation \eqref{eq:flow} becomes
+\begin{align*}
+    c_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j + {\phi_i}^2 = 0 \, .
+\end{align*}
+One can prove that the left-hand side is a convex function through the convex criterion $$f(\lambda \bm{x} + (1 - \lambda) \bm{y}) \leq \lambda f(\bm{x}) + (1 - \lambda) f(\bm{y}) \quad \forall \, \lambda \in [0, 1] \, .$$ Indeed, replacing $\bm{x}$ and $\bm{y}$ respectively by $(\pi, \phi_i)$ and $(\pi^*, \phi_i^*)$,
+\begin{alignat*}{2}
+    && c_i \sum_{j \, \in \, N} \delta_{j, i} \, (\lambda \pi_j + (1 - \lambda) \pi_j^*) & + \rbk{\lambda \phi_j + (1 - \lambda) \phi_j^*}^2 \\
+    && \leq \lambda \rbk{c_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j + {\phi_i}^2} & + (1 - \lambda) \rbk{c_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j^* + {\phi_i^*}^2} \\
+    \Leftrightarrow \quad && \lambda^2 {\phi_j}^2 + 2 \lambda (1 - \lambda) \phi_j \, \phi_j^* + (1 - \lambda)^2 {\phi_j^*}^2 & \leq \lambda {\phi_i}^2 + (1 - \lambda) {\phi_i^*}^2 \\
+    \Leftrightarrow \quad && 0 & \leq \lambda (1 - \lambda) {\phi_i}^2 + \lambda (1 - \lambda) {\phi_i^*}^2 - 2 \lambda (1 - \lambda) \phi_j \, \phi_j^* \\
+    && & \leq \rbk{\phi_i - \phi_i^*}^2
+\end{alignat*}
+which is always true. As a result, the set defined by the inequation
+\begin{align}
+    c_i \sum_{j \, \in \, N} \delta_{j, i} \, \pi_j + {\phi_i}^2 & \leq 0 \label{eq:convex_relax}
+\end{align}
+is also convex.
+
+Therefore, the relaxation we chose for this problem consist in replacing the gas flow equation by \eqref{eq:convex_relax} in the model \eqref{eq:system} which yields a convex optimization problem. Since the original domain is included in the one resulting of this relaxation, the optimal objective of the relaxed problem will provide a lower bound to the original problem.
+
+To solve this new convex optimisation problem, we used \texttt{pyomo} and \texttt{Gurobi} as well. The results can be found in the \texttt{convex\_solution.txt} file. The optimal objective is \num{1.124e-7}, i.e. all nodal demands are served while compressors are barely used to increase the pressures.
+
+\subsection{Comparison}
+
+As one can see in the Figures \ref{fig:pi}, \ref{fig:phi} and \ref{fig:psi}, the solutions of the linear and convex problems are quite similar. The most noticeable differences are at node 5 and pipe 8. Indeed, the former's pressure is significantly higher for the convex relaxation. We have not come up with a more satisfying reason for this phenomenon than being simply an unexpected side effect of the relaxation of the gas flow equation.
+
+For pipe 8, we note that the two values are similar in norm but opposite in sign. This is the result of the incidence matrix update performed previously.
+
+\section{Non-linear problem} \label{sec:non-linear}
+
+As required, we solved the problem using the \texttt{IPOPT} solver. The results can be found in the \texttt{non-linear\_solution.txt} file.
+
+This time the optimal objective is \num{-0.0014}. But, if all the imposed constraints were met, the objective function should be non negative. Indeed, by looking closely in the produced file, we see that some injections ($\psi$) have exceeded their lower bound very slightly ($\sim$\num{e-8}). This could be due to the tolerance of the \texttt{IPOPT} solver which we tried to modify without success.
+
+\subsection{Comparison}
+
+As one can see on Figures \ref{fig:pi}, \ref{fig:phi} and \ref{fig:psi}, the solutions of the linear, convex and non-linear problems are quite similar. For the difference of pressures, the non-linear solution does not feature the \og{}jump\fg{} at node 5 that the convex one present, but behaves similarly otherwise.
+
+For the gas flows, apart from edge 8 (cf. the comparison of linear and convex solutions), we observe a very significant difference for edges 10 and 11. Actually, these two edges are compressors that 
+both go from \og{}'s Gravenvoeren\fg{} to \og{}Berneau\fg{}. Therefore, splitting the gas flow between them (as the non-linear solution does) or keeping one of them empty (as linear and convex solutions do) is strictly equivalent.
+
+\appendix
+
+\section{Plots}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./resources/pdf/pi.pdf}
+    \caption{Squared pressures at every nodes.}
+    \label{fig:pi}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./resources/pdf/phi.pdf}
+    \caption{Gas flow in every edges.}
+    \label{fig:phi}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./resources/pdf/psi.pdf}
+    \caption{Nodal injection at every nodes.}
+    \label{fig:psi}
+\end{figure}
+
+\end{document}

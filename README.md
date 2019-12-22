@@ -9,3 +9,4 @@ This project has been developed using [Python](https://www.python.org/) and [Gur
 ## Authors
 
 * **François Rozet** - [Donshel](https://github.com/Donshel)
+* **Louis Nelissen** - [15louisn](https://github.com/15louisn)
