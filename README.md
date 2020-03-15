@@ -8,7 +8,7 @@ This project has been developed using [Python](https://www.python.org/) and [Gur
 
 ## Authors
 
-* **François Rozet** - [Donshel](https://github.com/Donshel)
+* **François Rozet** - [francois-rozet](https://github.com/francois-rozet)
 * **Louis Nelissen** - [15louisn](https://github.com/15louisn)
 
 ## Score
